@@ -1,0 +1,5 @@
+[
+{{ range $i, $e := .Data.Pages}}
+	{{if $i}}, {{end}}{{ .Render "li"}}
+{{end}}
+]

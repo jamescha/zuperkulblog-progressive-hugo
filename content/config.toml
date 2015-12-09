@@ -1,0 +1,29 @@
+baseurl = "https://www.justinribeiro.com/"
+languageCode = "en-us"
+title = "Justin Testing Shells"
+publishdir = "../app/static/data"
+
+[permalinks]  
+	art = "/art/detail/:title/"
+	film = "/film/detail/:title/"
+
+[params]
+
+[params.authors]
+
+	[params.authors.JustinRibeiro]
+		name				= "Justin Ribeiro"
+		thumbnail		= "/images/me/justinribeiro.jpg"
+		github			= "https://github.com/justinribeiro"
+		twitter			= "https://twitter.com/justinribeiro"
+		gplus			= "https://plus.google.com/+JustinRibeiro"
+		bio				= "I heart web things."
+
+	[params.authors.RomanNurikViltorPersson]
+		name				= "Roman Nurik and Viltor Persson"
+
+	[params.authors.GoogleDesign]
+		name				= "Google Design"
+
+	[params.authors.AmberBravo]
+		name				= "Amber Bravo"

@@ -1,0 +1,177 @@
+<!--
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!--
+PERF IMPROVEMENTS
+- async wc-lite.js
+- async import
+- no <body unresolved>
+- vulcanize
+- XHR instead of iron-ajax - kicks of data fetch sooner. don't have to wait for element upgrades
+-->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Zuperk&uuml;lblog</title>
+
+  <!-- Chrome for Android theme color -->
+  <meta name="theme-color" content="#FFFFFF">
+
+  <!-- Web Application Manifest -->
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Tile color for Win8 -->
+  <meta name="msapplication-TileColor" content="#497886">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Zuperk&uuml;lblog">
+  <link rel="icon" sizes="192x192" href="/images/touch/chrome-touch-icon-192x192.png">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Zuperk&uuml;lblog">
+  <link rel="apple-touch-icon" href="/images/touch/apple-touch-icon.png">
+
+  <!-- Tile icon for Win8 (144x144) -->
+  <meta name="msapplication-TileImage" content="/images/touch/ms-touch-icon-144x144-precomposed.png">
+
+  <!-- 1. Async HTML Imports do not block rending. Benefit of keeping it declarative
+       (instead of dynamically loading it later in JS) is that the parser can go
+       to town pre-fetching resources, etc. -->
+  <link rel="import" id="bundle" href="/elements/elements.html" async>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', 'Noto', 'Helvetica', sans-serif;
+      background-color: #fafafa;
+    }
+
+    #skeleton .drawer {
+      position: fixed;
+      top: 0;
+      right: auto;
+      bottom: 0;
+      left: 0;
+      background-color: #404040;
+      width: 288px;
+    }
+
+    #skeleton .main > .app-header {
+      display: block;
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      border-bottom: 1px solid #ddd;
+      background-color: #fff;
+      color: #444;
+      transform: translate3d(0px, 0px, 0px);
+      left: 288px;
+    }
+
+    #skeleton .app-toolbar {
+      height: 64px;
+      padding: 0 16px;
+      position: relative;
+      pointer-events: none;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    #skeleton .site-title {
+      padding-bottom: 40px;
+      font-size: 60px;
+      font-weight: 800;
+    }
+
+    @media (max-width: 1280px) {
+      #skeleton .drawer {
+        display: none;
+      }
+
+      #skeleton .main > .app-header {
+        left: 0;
+      }
+    }
+
+    @media (max-width: 580px) {
+      /* make title smaller to fit on screen */
+      #skeleton .site-title {
+        font-size: 40px;
+        padding-bottom: 16px;
+      }
+    }
+  </style>
+
+</head>
+
+<!-- 2. Don't use <body unresolved>. It's a simple FOUC solution, but hides
+     the page until imports and Polymer are loaded. Intead, control FOUC manually with
+     a skeleton. -->
+<body>
+
+  <!-- 3. Light weight skeleton is outside of Polymer/imports and styled by
+       the main page. 1st paint is fast, even on polyfilled browsers. Alternatively,
+       one could create an "app shell" and style the page's un-upgraded elements
+       similar to their final upgraded version. -->
+  <div id="skeleton">
+    <!-- drawer panel -->
+    <div class="drawer"></div>
+    <!-- main panel -->
+    <div class="main">
+      <div class="app-header">
+        <!-- top toolbar -->
+        <div class="app-toolbar"></div>
+        <!-- bottom toolbar -->
+        <div class="app-toolbar">
+          <div class="site-title">ZUPERK&Uuml;LBLOG</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Elements wait on the page and are upgraded when elements.html loads. -->
+  <blog-app></blog-app>
+
+  <platinum-sw-register auto-register
+                        clients-claim
+                        skip-waiting
+                        href="/sw-import.js"
+                        scope="/">
+    <platinum-sw-cache default-cache-strategy="fastest"
+                       cache-config-file="/cache-config.json">
+    </platinum-sw-cache>
+  </platinum-sw-register>
+
+  <!-- build:js /scripts/app.js async -->
+  <script src="/bower_components/page/page.js"></script>
+  <script src="/scripts/app.js"></script>
+  <!-- endbuild-->
+
+</body>
+
+</html>

@@ -1,0 +1,5 @@
+{{ $author := index .Site.Params.authors .Params.author }}
+{
+	"name": "{{ $author.name }}",
+	"thumbnail": "{{ $author.thumbnail }}"
+}
